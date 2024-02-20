@@ -1,0 +1,31 @@
+name: Generate PDF from MkDocs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-upload-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.12'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install -r requirements.txt
+
+      - name: Build MkDocs site
+        run: ENABLE_PDF_EXPORT=1 mkdocs build
+
+      - name: Upload PDF as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: mkdocs-pdf
+          path: site/pdf/document.pdf
